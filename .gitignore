@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+bot_stdout.log
+bot_stderr.log
+.DS_Store
+Thumbs.db
