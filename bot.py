@@ -198,13 +198,13 @@ def get_main_menu_keyboard():
                 {"text": "🔍 Carian Topik", "callback_data": "menu_search_info"}
             ],
             [
-                {"text": "💎 237 Mutiara Kata (Hadis Nabi SAW + Tokoh & Pejuang)", "callback_data": "hikmah_random"}
+                {"text": "💎 227 Mutiara Kata (Hadis Nabi SAW + Tokoh & Pejuang)", "callback_data": "hikmah_random"}
             ],
             [
                 {"text": "🔄 Pilihan Mod Bacaan", "callback_data": "menu_mode"}
             ],
             [
-                {"text": "🧭 Buka Web PWA Al-Awaiq 🌐", "url": "https://najsha97-rgb.github.io/al-masar-pwa/"}
+                {"text": "🧭 Buka Web PWA Al-Awaiq 🌐", "url": "https://najsha97-rgb.github.io/al-awaiq-pwa/"}
             ],
             [
                 {"text": "ℹ️ Info Kitab & Syeikh", "callback_data": "menu_about"}
@@ -324,7 +324,7 @@ def format_subtopic_text(ch_idx, s_idx, layer, page=0, search_q=None):
     
     header = (
         f"🔵 ━━━━━━━━━━━━━━━━━━━ ⚡\n"
-        f"🧭 <b>AL-MASAR (المَسَار)</b>\n"
+        f"🧭 <b>AL-AWAIQ (المَسَار)</b>\n"
         f"📚 <b>{ch['number']}: {ch['title']}</b>\n"
         f"📑 <b>Tajuk: {sub['title']}</b>\n"
         f"🏷 {mode_label}\n"
@@ -424,12 +424,12 @@ if os.path.exists(QUOTES_PATH):
 
 def format_hikmah_message(item):
     quote_text = md_to_telegram_html(item.get("quote", ""))
-    total_q = len(HIKMAH_DATA) if HIKMAH_DATA else 237
+    total_q = len(HIKMAH_DATA) if HIKMAH_DATA else 227
     q_id = item.get("id", "")
     badge = f" #{q_id}" if q_id else ""
     return (
         f"🔵 ━━━━━━━━━━━━━━━━━━━ ⚡\n"
-        f"💎 <b>MUTIARA HIKMAH DAKWAH AL-MASAR</b> 💎\n"
+        f"💎 <b>MUTIARA HIKMAH DAKWAH AL-AWAIQ</b> 💎\n"
         f"✨ <i>Koleksi Mutiara Emas ({badge} / {total_q})</i>\n"
         f"🔵 ━━━━━━━━━━━━━━━━━━━ ⚡\n\n"
         f"👤 <b>{item.get('speaker', 'Tokoh Dakwah')}</b>\n\n"
@@ -438,7 +438,7 @@ def format_hikmah_message(item):
         f"📚 <b>Sumber:</b> {item.get('chapterNumber', '')} - {item.get('chapterTitle', '')}\n"
         f"📑 <b>Topik:</b> {item.get('subtopicTitle', '')}\n"
         f"🧭 <i>Kitab Al-Awaiq — Syeikh Muhammad Ahmad Ar-Rasyid</i>\n"
-        f"🌐 https://najsha97-rgb.github.io/al-masar-pwa/"
+        f"🌐 https://najsha97-rgb.github.io/al-awaiq-pwa/"
     )
 
 def get_hikmah_keyboard(item):
@@ -472,7 +472,7 @@ def handle_message(msg):
     if text.startswith("/start") or text.startswith("/menu"):
         welcome_txt = (
             "🔵 ━━━━━━━━━━━━━━━━━━━ ⚡\n"
-            "🧭 <b>AL-MASAR (المَسَار)</b> 🧭\n"
+            "🧭 <b>AL-AWAIQ (المَسَار)</b> 🧭\n"
             "<i>Halangan-Halangan Dakwah Harakah Islamiyah</i>\n"
             "🔵 ━━━━━━━━━━━━━━━━━━━ ⚡\n\n"
             "<blockquote>📖 <b>Pengarang:</b> As-Syeikh Muhammad Ahmad Ar-Rasyid (رحمه الله)\n"
@@ -480,9 +480,9 @@ def handle_message(msg):
             "📚 <b>Struktur Dwi-Lapisan (Dual-Layer):</b>\n"
             "• 🔵 <code>Layer 1</code>: Versi Penuh Terjemahan Lengkap (20 Bab + 210 Topik Lengkap)\n"
             "• ⚡ <code>Layer 2</code>: Ringkasan Eksklusif Berstruktur & Analisis Haraki\n"
-            "• 💎 <code>Mutiara Hikmah</code>: Himpunan 237 Nukilan Emas Tokoh & Pemimpin Dakwah\n\n"
+            "• 💎 <code>Mutiara Hikmah</code>: Himpunan 227 Nukilan Emas Tokoh & Pemimpin Dakwah\n\n"
             "🌐 <b>Web PWA (Tema Nilam & Amber):</b>\n"
-            "https://najsha97-rgb.github.io/al-masar-pwa/\n\n"
+            "https://najsha97-rgb.github.io/al-awaiq-pwa/\n\n"
             "<i>Sila pilih menu di bawah untuk memulakan bacaan:</i>"
         )
         send_message(chat_id, welcome_txt, get_main_menu_keyboard())
@@ -583,7 +583,7 @@ def handle_callback(cb):
     if data == "menu_main":
         welcome_txt = (
             "🔵 ━━━━━━━━━━━━━━━━━━━ ⚡\n"
-            "🧭 <b>AL-MASAR (المَسَار)</b> 🧭\n"
+            "🧭 <b>AL-AWAIQ (المَسَار)</b> 🧭\n"
             "<i>Halangan-Halangan Dakwah Harakah Islamiyah</i>\n"
             "🔵 ━━━━━━━━━━━━━━━━━━━ ⚡\n\n"
             "<blockquote>📖 <b>Pengarang:</b> As-Syeikh Muhammad Ahmad Ar-Rasyid (رحمه الله)\n"
@@ -591,9 +591,9 @@ def handle_callback(cb):
             "📚 <b>Struktur Dwi-Lapisan (Dual-Layer):</b>\n"
             "• 🔵 <code>Layer 1</code>: Versi Penuh Terjemahan Lengkap (20 Bab + 210 Topik Lengkap)\n"
             "• ⚡ <code>Layer 2</code>: Ringkasan Eksklusif Berstruktur & Analisis Haraki\n"
-            "• 💎 <code>Mutiara Hikmah</code>: Himpunan 237 Nukilan Emas Tokoh & Pemimpin Dakwah\n\n"
+            "• 💎 <code>Mutiara Hikmah</code>: Himpunan 227 Nukilan Emas Tokoh & Pemimpin Dakwah\n\n"
             "🌐 <b>Web PWA (Tema Nilam & Amber):</b>\n"
-            "https://najsha97-rgb.github.io/al-masar-pwa/\n\n"
+            "https://najsha97-rgb.github.io/al-awaiq-pwa/\n\n"
             "<i>Sila pilih seksyen di bawah untuk memulakan bacaan:</i>"
         )
         edit_message(chat_id, msg_id, welcome_txt, get_main_menu_keyboard())
@@ -607,7 +607,7 @@ def handle_callback(cb):
         return
 
     if data == "menu_chapters":
-        txt = "📘 <b>PILIH BAB KANDUNGAN AL-MASAR:</b>\n\nKitab ini mengandungi Mukadimah, 20 Bab utama dan Khatimah (Penutup).\nPilih bab untuk melihat senarai topik:"
+        txt = "📘 <b>PILIH BAB KANDUNGAN AL-AWAIQ:</b>\n\nKitab ini mengandungi Mukadimah, 20 Bab utama dan Khatimah (Penutup).\nPilih bab untuk melihat senarai topik:"
         edit_message(chat_id, msg_id, txt, get_chapters_keyboard())
         return
 
@@ -676,7 +676,7 @@ def handle_callback(cb):
         cur_name = "Versi Penuh (Terjemahan Lengkap)" if cur == "layer1" else "Ringkasan Eksklusif"
         txt = (
             f"🔄 ━━━━━━━━━━━━━━━━━━━ ⚡\n"
-            f"⚙️ <b>TETAPAN MOD BACAAN AL-MASAR</b>\n"
+            f"⚙️ <b>TETAPAN MOD BACAAN AL-AWAIQ</b>\n"
             f"🔄 ━━━━━━━━━━━━━━━━━━━ ⚡\n\n"
             f"Mod semasa anda: <b>{cur_name}</b>\n\n"
             f"• 🔵 <b>Versi Penuh (Layer 1):</b> Memaparkan teks terjemahan penuh kitab tanpa tapisan.\n"
@@ -704,7 +704,7 @@ def handle_callback(cb):
     if data == "menu_search_info":
         txt = (
             "🔍 ━━━━━━━━━━━━━━━━━━━ ⚡\n"
-            "🧭 <b>PANDUAN CARIAN PANTAS AL-MASAR</b>\n"
+            "🧭 <b>PANDUAN CARIAN PANTAS AL-AWAIQ</b>\n"
             "🔍 ━━━━━━━━━━━━━━━━━━━ ⚡\n\n"
             "Anda boleh mencari sebarang topik, nama tokoh, atau istilah fiqh dakwah dengan menaip terus:\n\n"
             "👉 <code>/cari [kata kunci]</code>\n\n"
@@ -723,18 +723,18 @@ def handle_callback(cb):
     if data == "menu_about":
         txt = (
             "ℹ️ ━━━━━━━━━━━━━━━━━━━ ⚡\n"
-            "🧭 <b>TENTANG KITAB AL-MASAR (المسار)</b> 🧭\n"
+            "🧭 <b>TENTANG KITAB AL-AWAIQ (المسار)</b> 🧭\n"
             "ℹ️ ━━━━━━━━━━━━━━━━━━━ ⚡\n\n"
             "<blockquote><b>Pengarang:</b> As-Syeikh Muhammad Ahmad Ar-Rasyid (رحمه الله)\n"
             "<b>Genre:</b> Strategi, Polisi & Fiqh Perancangan Harakah Islamiyah\n"
             "<b>Cakupan:</b> Polisi Luaran, Polisi Dalaman & Polisi Tarbawi Harakah Islamiyah</blockquote>\n\n"
             "Al-Awaiq adalah buku siri kelima daripada siri-siri fiqh dakwah dan harakah Islamiyah dimulai dengan <i>al-Muntalaq</i> (mengenali tabiatnya), <i>al-‘Awa’iq</i> (halangan dakwah), <i>al-Raqa’iq</i> (kelembutan jiwa), dan <i>al-Bawariq</i> (lintasan panduan).\n\n"
             "🌐 <b>Aplikasi Web PWA (Tema Nilam & Amber):</b>\n"
-            "https://najsha97-rgb.github.io/al-masar-pwa/"
+            "https://najsha97-rgb.github.io/al-awaiq-pwa/"
         )
         kb = {
             "inline_keyboard": [
-                [{"text": "🔵 Layari Web PWA Al-Awaiq 🌐", "url": "https://najsha97-rgb.github.io/al-masar-pwa/"}],
+                [{"text": "🔵 Layari Web PWA Al-Awaiq 🌐", "url": "https://najsha97-rgb.github.io/al-awaiq-pwa/"}],
                 [{"text": "⬅️ Menu Utama", "callback_data": "menu_main"}]
             ]
         }
