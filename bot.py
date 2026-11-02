@@ -133,6 +133,20 @@ def escape_html_entities(text):
     # Gantikan sebarang & yang bukan sebahagian daripada entiti sah
     return re.sub(r"&(?!(?:amp|lt|gt|quot|apos);)", "&amp;", text)
 
+def send_document(chat_id, file_path, caption="", reply_markup=None):
+    url = f"{API_BASE}/sendDocument"
+    try:
+        with open(file_path, "rb") as f:
+            files = {"document": f}
+            data = {"chat_id": chat_id, "caption": caption, "parse_mode": "HTML"}
+            if reply_markup:
+                data["reply_markup"] = json.dumps(reply_markup)
+            res = session.post(url, data=data, files=files, timeout=60)
+            return res.json()
+    except Exception as e:
+        print(f"Ralat sendDocument: {e}")
+        return None
+
 def send_message(chat_id, text, reply_markup=None, parse_mode="HTML"):
     if parse_mode == "HTML":
         text = escape_html_entities(text)
@@ -204,10 +218,41 @@ def get_main_menu_keyboard():
                 {"text": "🔄 Pilihan Mod Bacaan", "callback_data": "menu_mode"}
             ],
             [
+                {"text": "🌍 Ummah Fadhilah & PBI (Sumbangan Al-‘Awā’iq)", "callback_data": "menu_pbi_awaiq"}
+            ],
+            [
                 {"text": "🧭 Buka Web PWA Al-Awaiq 🌐", "url": "https://najsha97-rgb.github.io/al-awaiq-pwa/"}
             ],
             [
                 {"text": "ℹ️ Info Kitab & Syeikh", "callback_data": "menu_about"}
+            ]
+        ]
+    }
+
+def get_pbi_main_keyboard():
+    return {
+        "inline_keyboard": [
+            [
+                {"text": "🤝 1. Kelompok Sehati Sejiwa (Bab 1)", "callback_data": "pbi_awaiq_1"}
+            ],
+            [
+                {"text": "⚠️ 2. Membongkar Takwil Terpedaya (Bab 3)", "callback_data": "pbi_awaiq_2"}
+            ],
+            [
+                {"text": "🏹 3. Merawat Rantaian Aib Diri (Bab 4 & 5)", "callback_data": "pbi_awaiq_3"}
+            ],
+            [
+                {"text": "⚔️ 4. Tundukkan Ego Fakih & Qiyadah (Bab 8, 21, 22)", "callback_data": "pbi_awaiq_4"}
+            ],
+            [
+                {"text": "🌱 5. Kebangkitan Kader Tersadung (Bab 21)", "callback_data": "pbi_awaiq_5"}
+            ],
+            [
+                {"text": "📕 Dokumen Am PDF (886 KB)", "callback_data": "pbi_doc_pdf"},
+                {"text": "📕 Dokumen Khas PDF (4.3 MB)", "callback_data": "pbi_khas_awaiq_pdf"}
+            ],
+            [
+                {"text": "⬅️ Kembali ke Menu Utama", "callback_data": "menu_main"}
             ]
         ]
     }
@@ -427,13 +472,14 @@ def format_hikmah_message(item):
     total_q = len(HIKMAH_DATA) if HIKMAH_DATA else 227
     q_id = item.get("id", "")
     badge = f" #{q_id}" if q_id else ""
+    quote_block = f"<blockquote>{quote_text}</blockquote>" if (quote_text.startswith("«") or quote_text.startswith("&laquo;")) else f"<blockquote>“{quote_text}”</blockquote>"
     return (
         f"🔵 ━━━━━━━━━━━━━━━━━━━ ⚡\n"
         f"💎 <b>MUTIARA HIKMAH DAKWAH AL-AWAIQ</b> 💎\n"
         f"✨ <i>Koleksi Mutiara Emas ({badge} / {total_q})</i>\n"
         f"🔵 ━━━━━━━━━━━━━━━━━━━ ⚡\n\n"
         f"👤 <b>{item.get('speaker', 'Tokoh Dakwah')}</b>\n\n"
-        f"<blockquote>“{quote_text}”</blockquote>\n\n"
+        f"{quote_block}\n\n"
         f"━━━━━━━━━━━━━━━━━━━\n"
         f"📚 <b>Sumber:</b> {item.get('chapterNumber', '')} - {item.get('chapterTitle', '')}\n"
         f"📑 <b>Topik:</b> {item.get('subtopicTitle', '')}\n"
@@ -578,6 +624,147 @@ def handle_callback(cb):
             handle_search(chat_id, search_q)
         else:
             send_message(chat_id, "Sila buat carian baru dengan /cari [kata kunci].")
+        return
+
+    if data == "menu_pbi_awaiq":
+        txt = (
+            "🌍 ━━━━━━━━━━━━━━━━━━━━━ ⚡\n"
+            "<b>UMMAH FADHILAH &amp; PERADABAN BARU ISLAM (PBI)</b>\n"
+            "<i>Sumbangan Kitab Al-‘Awā’iq dalam Membina Kuasa Watan 100 Tahun Kedua</i>\n"
+            "🌍 ━━━━━━━━━━━━━━━━━━━━━ ⚡\n\n"
+            "<blockquote>🛡️ <b>Sistem Radar Keselamatan &amp; Pengurusan Risiko Haraki:</b>\n"
+            "Kitab <b>Al-‘Awā’iq</b> berfungsi seperti papan tanda merah di lebuh raya dakwah untuk mengelak selekoh maut dan jerangkap kebinasaan. "
+            "Dalam membina Kuasa Nasional, ancaman terbesar sering kali bukan dari musuh luar, tetapi keretakan dalaman, perebutan jawatan, ego keilmuan, dan takwil siasah yang menyeleweng.</blockquote>\n\n"
+            "📌 <b>Lima Teras Sumbangan Al-‘Awā’iq:</b>\n"
+            "1. 🤝 <b>Kelompok Sehati Sejiwa:</b> Zumrat al-Qalb al-Wāḥid (Bab 1)\n"
+            "2. ⚠️ <b>Bongkar Takwil:</b> Benteng integriti aqidah siasah (Bab 3)\n"
+            "3. 🏹 <b>Rawat Rantaian Aib:</b> Kebal dari panah syaitan (Bab 4 &amp; 5)\n"
+            "4. ⚔️ <b>Tundukkan Ego Fakih:</b> Jawatan amanah hisab (Bab 8, 21 &amp; 22)\n"
+            "5. 🌱 <b>Kader Tersadung:</b> Fiqh istidrāk &amp; bimbingan matang (Bab 21)\n\n"
+            "<i>Sila pilih butang di bawah untuk membaca huraian lanjut atau memuat turun dokumen:</i>"
+        )
+        edit_message(chat_id, msg_id, txt, get_pbi_main_keyboard())
+        return
+
+    if data == "pbi_awaiq_1":
+        txt = (
+            "🤝 ━━━━━━━━━━━━━━━━━━━━━ ⚡\n"
+            "<b>1. MEMBINA KELOMPOK SEHATI SEJIWA (BAB 1)</b>\n"
+            "<i>Zumrat al-Qalb al-Wāḥid &amp; Fiqh Ukhuwah Harakiah</i>\n"
+            "🤝 ━━━━━━━━━━━━━━━━━━━━━ ⚡\n\n"
+            "• <b>Konsep Kelompok Sehati Sejiwa:</b> Berasaskan hadis <i>al-ghurabā'</i> yang membaiki kerosakan manusia pada akhir zaman.\n\n"
+            "• <b>Tonggak 5 (Kesatuan Ummah):</b> Menegaskan kekuatan Ummah Fadhilah tidak terletak pada ramainya bilangan semata-mata, tetapi pada ikatan hati yang bersih daripada hasad dengki, pertelagahan kabilah, dan persaingan kuasa."
+        )
+        kb = {"inline_keyboard": [[{"text": "⬅️ Kembali ke Menu PBI", "callback_data": "menu_pbi_awaiq"}]]}
+        edit_message(chat_id, msg_id, txt, kb)
+        return
+
+    if data == "pbi_awaiq_2":
+        txt = (
+            "⚠️ ━━━━━━━━━━━━━━━━━━━━━ ⚡\n"
+            "<b>2. MEMBONGKAR TAKWIL YANG MEMPERDAYA (BAB 3)</b>\n"
+            "<i>Al-Ta'wīl al-Mustadraj &amp; Benteng Integriti Siasah</i>\n"
+            "⚠️ ━━━━━━━━━━━━━━━━━━━━━ ⚡\n\n"
+            "• <b>Bahaya Takwil:</b> Memberi amaran keras terhadap proses memperdayakan diri dengan mencari dalil syarak ganjil semata-mata untuk menghalalkan kompromi prinsip demi survival politik sementara.\n\n"
+            "• <b>Integriti Kuasa Watan:</b> Menjadi benteng agar kepimpinan tidak menjual prinsip akidah di meja rundingan atas nama 'kebijaksanaan siasah'."
+        )
+        kb = {"inline_keyboard": [[{"text": "⬅️ Kembali ke Menu PBI", "callback_data": "menu_pbi_awaiq"}]]}
+        edit_message(chat_id, msg_id, txt, kb)
+        return
+
+    if data == "pbi_awaiq_3":
+        txt = (
+            "🏹 ━━━━━━━━━━━━━━━━━━━━━ ⚡\n"
+            "<b>3. MERAWAT RANTAIAN AIB DIRI &amp; PANAH SYAITAN (BAB 4 &amp; 5)</b>\n"
+            "<i>Salāsil al-‘Uyūb &amp; Imuniti Rohani Kader</i>\n"
+            "🏹 ━━━━━━━━━━━━━━━━━━━━━ ⚡\n\n"
+            "• <b>Rantaian Keaiban:</b> Keaiban moral yang dibiarkan tanpa rawatan tazkiyah akan menjadi rantai belenggu yang melumpuhkan daya juang aktivis watan.\n\n"
+            "• <b>Imuniti Rohani:</b> Membina kekebalan agar kader tidak mudah rebah tatkala diserang dengan fitnah wanita, harta, dan kemewahan jawatan."
+        )
+        kb = {"inline_keyboard": [[{"text": "⬅️ Kembali ke Menu PBI", "callback_data": "menu_pbi_awaiq"}]]}
+        edit_message(chat_id, msg_id, txt, kb)
+        return
+
+    if data == "pbi_awaiq_4":
+        txt = (
+            "⚔️ ━━━━━━━━━━━━━━━━━━━━━ ⚡\n"
+            "<b>4. KEPERAJURITAN &amp; MENUNDUKKAN EGO FAKIH (BAB 8, 21 &amp; 22)</b>\n"
+            "<i>Merawat Ghurūr al-Faqīh &amp; Wasiat Saidina Umar RA</i>\n"
+            "⚔️ ━━━━━━━━━━━━━━━━━━━━━ ⚡\n\n"
+            "• <b>Amanah Hisab:</b> Mengingatkan wasiat Saidina Umar RA bahawa jawatan kepimpinan adalah bebanan hisab di hadapan Allah, bukan trofi kemegahan.\n\n"
+            "• <b>Tonggak 2 (Kepimpinan Berwibawa):</b> Membongkar bahaya ego keilmuan yang melahirkan pertelagahan, serta merawatnya agar saf kepimpinan ulama dan teknokrat bersatu padu memimpin negara."
+        )
+        kb = {"inline_keyboard": [[{"text": "⬅️ Kembali ke Menu PBI", "callback_data": "menu_pbi_awaiq"}]]}
+        edit_message(chat_id, msg_id, txt, kb)
+        return
+
+    if data == "pbi_awaiq_5":
+        txt = (
+            "🌱 ━━━━━━━━━━━━━━━━━━━━━ ⚡\n"
+            "<b>5. KEBANGKITAN KADER YANG TERSADUNG (BAB 21)</b>\n"
+            "<i>Nahḍat al-‘Āthir &amp; Fiqh Istidrāk Matang</i>\n"
+            "🌱 ━━━━━━━━━━━━━━━━━━━━━ ⚡\n\n"
+            "• <b>Fiqh Tarbiah Penyayang:</b> Tidak membuang kader berpotensi yang tergelincir melakukan kesilapan kecil, sebaliknya memulihkan mereka melalui muhasabah dan bimbingan berhikmah.\n\n"
+            "• <b>Memelihara Modal Insan Pejuang:</b> Jangan biarkan kader tersadung menjadi mangsa jerangkap musuh dakwah."
+        )
+        kb = {"inline_keyboard": [[{"text": "⬅️ Kembali ke Menu PBI", "callback_data": "menu_pbi_awaiq"}]]}
+        edit_message(chat_id, msg_id, txt, kb)
+        return
+
+    if data == "pbi_doc_docx":
+        doc_path = os.path.join(os.path.dirname(__file__), "Gagasan_Ummah_Fadhilah_Kuasa_Nasional_dan_Tetralogi_Al-Rasyid.docx")
+        if os.path.exists(doc_path):
+            caption = (
+                "📄 <b>DOKUMEN PENGENALAN AM (MICROSOFT WORD)</b>\n\n"
+                "<b>Tajuk:</b> Gagasan Ummah Fadhilah, Kuasa Nasional dan Sumbangan Tetralogi Al-Rasyid\n"
+                "<b>Format:</b> .docx (Boleh disunting &amp; dikaji bersama usrah/komuniti)\n\n"
+                "<i>Kerangka Pemikiran Menuju 100 Tahun Kedua Pasca-1924</i>"
+            )
+            send_document(chat_id, doc_path, caption)
+        else:
+            send_message(chat_id, "⚠️ Fail Word (.docx) Am tidak ditemui.")
+        return
+
+    if data == "pbi_doc_pdf":
+        pdf_path = os.path.join(os.path.dirname(__file__), "Gagasan_Ummah_Fadhilah_Kuasa_Nasional_dan_Tetralogi_Al-Rasyid.pdf")
+        if os.path.exists(pdf_path):
+            caption = (
+                "📕 <b>E-BUKU DOKUMEN PENGENALAN AM (PDF)</b>\n\n"
+                "<b>Tajuk:</b> Gagasan Ummah Fadhilah, Kuasa Nasional dan Sumbangan Tetralogi Al-Rasyid\n"
+                "<b>Format:</b> .pdf (Sedia dicetak &amp; dibaca di mana-mana peranti)\n\n"
+                "<i>Kerangka Pemikiran Menuju 100 Tahun Kedua Pasca-1924</i>"
+            )
+            send_document(chat_id, pdf_path, caption)
+        else:
+            send_message(chat_id, "⚠️ Fail PDF (.pdf) Am tidak ditemui.")
+        return
+
+    if data == "pbi_khas_awaiq_docx":
+        doc_path = os.path.join(os.path.dirname(__file__), "Sumbangan_Al_Awaiq_Dalam_Ummah_Fadhilah_Kuasa_Nasional_dan_PBI.docx")
+        if os.path.exists(doc_path):
+            caption = (
+                "📄 <b>DOKUMEN KHAS AL-‘AWĀ’IQ (WORD)</b>\n\n"
+                "<b>Tajuk:</b> Sumbangan Kitab Al-‘Awā’iq dalam Pembinaan Ummah Fadhilah, Kuasa Nasional &amp; PBI\n"
+                "<b>Format:</b> .docx (Sistem Kekebalan Haraki &amp; Pengurusan Risiko)\n\n"
+                "<i>Siri 2 Fiqh Haraki • As-Syeikh Muhammad Ahmad al-Rasyid</i>"
+            )
+            send_document(chat_id, doc_path, caption)
+        else:
+            send_message(chat_id, "⚠️ Fail Word (.docx) Khas Al-‘Awā’iq tidak ditemui.")
+        return
+
+    if data == "pbi_khas_awaiq_pdf":
+        pdf_path = os.path.join(os.path.dirname(__file__), "Sumbangan_Al_Awaiq_Dalam_Ummah_Fadhilah_Kuasa_Nasional_dan_PBI.pdf")
+        if os.path.exists(pdf_path):
+            caption = (
+                "📕 <b>E-BUKU DOKUMEN KHAS AL-‘AWĀ’IQ (PDF)</b>\n\n"
+                "<b>Tajuk:</b> Sumbangan Kitab Al-‘Awā’iq dalam Pembinaan Ummah Fadhilah, Kuasa Nasional &amp; PBI\n"
+                "<b>Format:</b> .pdf (Sedia dicetak &amp; dibaca di mana-mana peranti)\n\n"
+                "<i>Siri 2 Fiqh Haraki • As-Syeikh Muhammad Ahmad al-Rasyid</i>"
+            )
+            send_document(chat_id, pdf_path, caption)
+        else:
+            send_message(chat_id, "⚠️ Fail PDF (.pdf) Khas Al-‘Awā’iq tidak ditemui.")
         return
 
     if data == "menu_main":
