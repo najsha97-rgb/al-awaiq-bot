@@ -470,8 +470,8 @@ if os.path.exists(QUOTES_PATH):
 def format_hikmah_message(item):
     quote_text = md_to_telegram_html(item.get("quote", ""))
     total_q = len(HIKMAH_DATA) if HIKMAH_DATA else 227
-    q_id = item.get("id", "")
-    badge = f" #{q_id}" if q_id else ""
+    q_num = str(item.get("number") or item.get("id", "")).replace("q_", "")
+    badge = f" #{q_num}" if q_num else ""
     quote_block = f"<blockquote>{quote_text}</blockquote>" if (quote_text.startswith("«") or quote_text.startswith("&laquo;")) else f"<blockquote>“{quote_text}”</blockquote>"
     return (
         f"🔵 ━━━━━━━━━━━━━━━━━━━ ⚡\n"
